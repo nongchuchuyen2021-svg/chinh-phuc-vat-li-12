@@ -1,0 +1,324 @@
+"use client";
+
+import { useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
+import type { Question } from "@/lib/types";
+import { getLessonProgress, saveAttempt } from "@/lib/progress";
+
+export function scrollIntoViewIfNeeded(el: HTMLElement | null) {
+  if (!el) return;
+  const reduceMotion =
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  el.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "nearest" });
+}
+
+type ShuffledQuestion = Question & {
+  shuffledOptions: string[];
+  correctIndex: number;
+};
+
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function prepare(questions: Question[]): ShuffledQuestion[] {
+  return shuffle(questions).map((q) => {
+    const order = shuffle([0, 1, 2, 3]);
+    return {
+      ...q,
+      shuffledOptions: order.map((i) => q.options[i]),
+      correctIndex: order.indexOf(q.answer),
+    };
+  });
+}
+
+const OPTION_LABELS = ["A", "B", "C", "D"];
+
+export default function QuizClient({
+  lessonId,
+  lessonTitle,
+  topicName,
+  questions,
+  onBack,
+}: {
+  lessonId: string;
+  lessonTitle: string;
+  topicName: string;
+  questions: Question[];
+  onBack?: () => void;
+}) {
+  const [quiz, setQuiz] = useState<ShuffledQuestion[]>([]);
+  const [current, setCurrent] = useState(0);
+  const [picked, setPicked] = useState<number | null>(null);
+  const [correctCount, setCorrectCount] = useState(0);
+  const [wrongIds, setWrongIds] = useState<string[]>([]);
+  const [finished, setFinished] = useState(false);
+  const [best, setBest] = useState<number | null>(null);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setQuiz(prepare(questions));
+    setBest(getLessonProgress(lessonId)?.best ?? null);
+  }, [questions, lessonId]);
+
+  useEffect(() => {
+    if (picked !== null) scrollIntoViewIfNeeded(feedbackRef.current);
+  }, [picked]);
+
+  const q = quiz[current];
+  const scorePercent = quiz.length ? Math.round((correctCount / quiz.length) * 100) : 0;
+
+  const wrongQuestions = useMemo(
+    () => quiz.filter((item) => wrongIds.includes(item.id)),
+    [quiz, wrongIds]
+  );
+
+  function pick(index: number) {
+    if (picked !== null || !q) return;
+    setPicked(index);
+    if (index === q.correctIndex) {
+      setCorrectCount((c) => c + 1);
+    } else {
+      setWrongIds((ids) => [...ids, q.id]);
+    }
+  }
+
+  function next() {
+    if (current + 1 >= quiz.length) {
+      const percent = Math.round((correctCount / quiz.length) * 100);
+      saveAttempt(lessonId, percent);
+      setFinished(true);
+    } else {
+      setCurrent((c) => c + 1);
+      setPicked(null);
+    }
+  }
+
+  function retry() {
+    setQuiz(prepare(questions));
+    setCurrent(0);
+    setPicked(null);
+    setCorrectCount(0);
+    setWrongIds([]);
+    setFinished(false);
+    setBest(getLessonProgress(lessonId)?.best ?? null);
+  }
+
+  if (quiz.length === 0) {
+    return (
+      <main className="cosmos stars flex min-h-screen items-center justify-center">
+        <p className="font-mono text-sm text-star-soft">Đang chuẩn bị câu hỏi…</p>
+      </main>
+    );
+  }
+
+  // ===== Màn hình kết quả =====
+  if (finished) {
+    const emoji = scorePercent >= 80 ? "🎉" : scorePercent >= 50 ? "💪" : "📖";
+    const message =
+      scorePercent >= 80
+        ? "Xuất sắc! Em đã nắm chắc bài này."
+        : scorePercent >= 50
+          ? "Khá lắm! Xem lại các câu sai rồi thử lại nhé."
+          : "Đừng nản! Đọc lại bài rồi luyện thêm lần nữa nhé.";
+
+    return (
+      <main className="cosmos stars relative min-h-screen pb-16">
+        <div className="relative z-10 mx-auto max-w-2xl px-5 pt-12 sm:px-8">
+          <div className="animate-pop-in rounded-2xl glass-bright p-8 text-center shadow-glow">
+            <p className="text-6xl">{emoji}</p>
+            <h1 className="mt-3 font-display text-2xl font-bold">
+              <span className="bg-gradient-to-r from-nebula to-plasma bg-clip-text text-transparent">
+                {correctCount}/{quiz.length} câu đúng · {scorePercent}%
+              </span>
+            </h1>
+            <p className="mt-2 text-star-soft">{message}</p>
+            {best !== null && scorePercent > best && (
+              <p className="mt-2 font-mono text-sm font-medium text-correct">
+                🚀 Kỉ lục mới! (trước đó: {best}%)
+              </p>
+            )}
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <button
+                onClick={retry}
+                className="rounded-full bg-gradient-to-r from-nebula to-plasma px-6 py-2.5 font-medium text-white shadow-glow transition hover:shadow-glow-hover"
+              >
+                Làm lại (trộn đề mới)
+              </button>
+              {onBack ? (
+                <button
+                  onClick={onBack}
+                  className="rounded-full glass px-6 py-2.5 font-medium text-star-soft transition hover:text-star hover:border-nebula/40"
+                >
+                  ← Chọn phần khác
+                </button>
+              ) : (
+                <Link
+                  href="/"
+                  className="rounded-full glass px-6 py-2.5 font-medium text-star-soft transition hover:text-star hover:border-nebula/40"
+                >
+                  Chọn bài khác
+                </Link>
+              )}
+            </div>
+          </div>
+
+          {wrongQuestions.length > 0 && (
+            <section className="mt-8">
+              <h2 className="font-display text-lg font-semibold text-star">
+                📌 Xem lại {wrongQuestions.length} câu sai
+              </h2>
+              <ul className="mt-3 space-y-3">
+                {wrongQuestions.map((item) => (
+                  <li
+                    key={item.id}
+                    className="rounded-xl glass px-4 py-4 shadow-glass"
+                    style={{ borderColor: "rgba(239,68,68,0.3)" }}
+                  >
+                    <p className="text-sm font-medium text-star">{item.q}</p>
+                    {item.code && item.code !== "?" && (
+                      <pre className="mt-2 overflow-x-auto rounded-lg bg-void p-3 font-mono text-xs leading-relaxed text-nebula-glow">
+                        {item.code}
+                      </pre>
+                    )}
+                    <p className="mt-2 text-sm text-correct">
+                      ✔ Đáp án đúng: {item.options[item.answer]}
+                    </p>
+                    <p className="mt-1 text-sm leading-relaxed text-star-soft">{item.explain}</p>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+        </div>
+      </main>
+    );
+  }
+
+  // ===== Màn hình làm bài =====
+  const progressPercent = Math.round((current / quiz.length) * 100);
+
+  return (
+    <main className="cosmos stars relative min-h-screen pb-16">
+      <div className="relative z-10 mx-auto max-w-2xl px-5 pt-8 sm:px-8">
+        <header>
+          <div className="flex items-center justify-between gap-3">
+            {onBack ? (
+              <button
+                onClick={onBack}
+                className="rounded-full glass px-3 py-1.5 font-mono text-xs text-star-soft transition hover:text-star hover:border-nebula/40"
+              >
+                ← Quay lại
+              </button>
+            ) : (
+              <Link
+                href="/"
+                className="rounded-full glass px-3 py-1.5 font-mono text-xs text-star-soft transition hover:text-star hover:border-nebula/40"
+              >
+                ← Trang chủ
+              </Link>
+            )}
+            <p className="font-mono text-xs text-star-soft">
+              Câu {current + 1}/{quiz.length}
+              {best !== null && ` · kỉ lục ${best}%`}
+            </p>
+          </div>
+          <h1 className="mt-3 font-display text-lg font-semibold leading-snug text-star">
+            {lessonTitle}
+          </h1>
+          <p className="font-mono text-xs text-star-mute">{topicName}</p>
+          {/* Neon progress bar */}
+          <div className="mt-3 h-2 overflow-hidden rounded-full bg-void-card">
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-nebula to-plasma transition-all duration-300 shadow-glow"
+              style={{ width: `${progressPercent}%` }}
+            />
+          </div>
+        </header>
+
+        <div key={q.id} className="mt-6 animate-pop-in">
+          <div className="rounded-2xl glass-bright p-5 shadow-glass sm:p-6">
+            <p className="text-base font-medium leading-relaxed text-star">{q.q}</p>
+            {q.code && q.code !== "?" && (
+              <pre className="mt-3 overflow-x-auto rounded-lg bg-void p-3.5 font-mono text-sm leading-relaxed text-nebula-glow">
+                {q.code}
+              </pre>
+            )}
+          </div>
+
+          <div className="mt-4 space-y-2.5">
+            {q.shuffledOptions.map((option, i) => {
+              const isPicked = picked === i;
+              const isCorrect = i === q.correctIndex;
+              let cls = "glass hover:border-nebula/50 hover:shadow-glow";
+              if (picked !== null) {
+                if (isCorrect) {
+                  cls = "border-correct bg-correct/15 shadow-none";
+                } else if (isPicked) {
+                  cls = "border-wrong bg-wrong/15 animate-wiggle shadow-none";
+                } else {
+                  cls = "glass-subtle opacity-50";
+                }
+              }
+              return (
+                <button
+                  key={i}
+                  onClick={() => pick(i)}
+                  disabled={picked !== null}
+                  className={`flex w-full items-start gap-3 rounded-xl border-2 px-4 py-3 text-left text-sm transition-all duration-200 ${cls}`}
+                >
+                  <span
+                    className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full font-mono text-xs font-semibold ${
+                      picked !== null && isCorrect
+                        ? "bg-correct text-white"
+                        : picked !== null && isPicked
+                          ? "bg-wrong text-white"
+                          : "bg-nebula/15 text-nebula-glow"
+                    }`}
+                  >
+                    {picked !== null && isCorrect
+                      ? "✓"
+                      : picked !== null && isPicked
+                        ? "✕"
+                        : OPTION_LABELS[i]}
+                  </span>
+                  <span className="whitespace-pre-wrap font-mono text-[13px] leading-relaxed text-star sm:text-sm">
+                    {option}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {picked !== null && (
+            <div
+              ref={feedbackRef}
+              className="mt-4 animate-pop-in rounded-xl glass-bright p-4 shadow-glass"
+            >
+              <p
+                className={`font-display text-sm font-semibold ${
+                  picked === q.correctIndex ? "text-correct" : "text-wrong"
+                }`}
+              >
+                {picked === q.correctIndex ? "🎯 Chính xác!" : "😅 Chưa đúng rồi"}
+              </p>
+              <p className="mt-1.5 text-sm leading-relaxed text-star-soft">{q.explain}</p>
+              <button
+                onClick={next}
+                className="mt-3 w-full rounded-full bg-gradient-to-r from-nebula to-plasma px-5 py-2.5 font-medium text-white shadow-glow transition hover:shadow-glow-hover"
+              >
+                {current + 1 >= quiz.length ? "Xem kết quả 🏁" : "Câu tiếp theo →"}
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </main>
+  );
+}
