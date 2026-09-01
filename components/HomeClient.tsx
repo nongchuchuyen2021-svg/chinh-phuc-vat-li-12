@@ -225,13 +225,42 @@ export default function HomeClient({ counts }: { counts: Record<string, LessonCo
             nhận sao ⭐. Tiến độ được lưu ngay trên máy của em.
           </p>
 
+          {/* Quick Action Cards: Sổ tay công thức & Thi thử THPT */}
+          <div className="mt-7 grid grid-cols-2 gap-3.5 sm:gap-4">
+            <Link
+              href="/cong-thuc"
+              className="group flex flex-col items-center justify-center rounded-2xl glass-bright p-4 text-center shadow-glass transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glow hover:border-nebula/40"
+            >
+              <span className="text-2xl sm:text-3xl">📑</span>
+              <span className="mt-2 font-display text-sm font-bold text-star group-hover:text-nebula-glow transition-colors sm:text-base">
+                Sổ tay Công thức
+              </span>
+              <span className="mt-0.5 font-mono text-[11px] text-star-mute sm:text-xs">
+                Tra cứu nhanh 4 chương
+              </span>
+            </Link>
+
+            <Link
+              href="/thi-thu"
+              className="group flex flex-col items-center justify-center rounded-2xl glass-bright p-4 text-center shadow-glass transition-all duration-300 hover:-translate-y-0.5 hover:shadow-glow-gold hover:border-photon/40"
+            >
+              <span className="text-2xl sm:text-3xl">📝</span>
+              <span className="mt-2 font-display text-sm font-bold text-star group-hover:text-photon transition-colors sm:text-base">
+                Thi thử Tốt nghiệp
+              </span>
+              <span className="mt-0.5 font-mono text-[11px] text-star-mute sm:text-xs">
+                Đề chuẩn cấu trúc 2025
+              </span>
+            </Link>
+          </div>
+
           {/* Progress ring */}
           {loaded && (
-            <div className="mt-6 inline-flex flex-col items-center gap-2">
+            <div className="mt-7 inline-flex flex-col items-center gap-2">
               <ProgressRing done={doneCount} total={availableLessons.length || totalLessons} />
               <span className="font-mono text-xs text-star-soft">
                 {availableLessons.length > 0
-                  ? `Đã chinh phục ${doneCount}/${availableLessons.length} bài`
+                  ? `Đã chinh phục ${doneCount}/${availableLessons.length} bài (Trọn bộ 25 bài)`
                   : `${totalLessons} bài · đang biên soạn`}
               </span>
             </div>
@@ -255,21 +284,7 @@ export default function HomeClient({ counts }: { counts: Record<string, LessonCo
               <ul className="stagger mt-3 space-y-2.5">
                 {topic.lessons.map((lesson) => {
                   const p = progress[lesson.id];
-                  const c = counts[lesson.id];
-
-                  if (!lesson.available) {
-                    return (
-                      <li
-                        key={lesson.id}
-                        className="flex items-center justify-between rounded-xl glass-subtle px-4 py-3 text-sm text-star-mute"
-                      >
-                        <span>{lesson.title}</span>
-                        <span className="shrink-0 rounded-full bg-nebula/10 px-2.5 py-0.5 font-mono text-xs text-nebula/60">
-                          sắp có
-                        </span>
-                      </li>
-                    );
-                  }
+                  const c = counts[lesson.id] ?? { mcq: 10, tf: 2, essay: 2, theory: true };
 
                   const meta = [
                     `${c.mcq} trắc nghiệm`,
