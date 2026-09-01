@@ -115,7 +115,7 @@ export default function MockExamClient() {
               Luyện thi thử Tốt nghiệp THPT
             </span>
             <br />
-            <span className="text-star">Môn Vật lí — Cấu trúc 2025</span>
+            <span className="text-star">Môn Vật lí — Cấu trúc 2025 - 2026</span>
           </h1>
 
           <div className="mt-6 rounded-2xl glass p-6 text-left shadow-glass space-y-3.5 border border-nebula/20">

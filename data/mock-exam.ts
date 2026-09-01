@@ -19,7 +19,7 @@ export type MockExam = {
 };
 
 export const MOCK_EXAM_2025: MockExam = {
-  title: "Đề thi thử Tốt nghiệp THPT môn Vật lí — Cấu trúc 2025",
+  title: "Đề thi thử Tốt nghiệp THPT môn Vật lí — Cấu trúc 2025 - 2026",
   durationMinutes: 50,
   totalPoints: 10.0,
   part1: [

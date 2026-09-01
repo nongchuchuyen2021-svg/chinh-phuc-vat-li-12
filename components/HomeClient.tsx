@@ -249,7 +249,7 @@ export default function HomeClient({ counts }: { counts: Record<string, LessonCo
                 Thi thử Tốt nghiệp
               </span>
               <span className="mt-0.5 font-mono text-[11px] text-star-mute sm:text-xs">
-                Đề chuẩn cấu trúc 2025
+                Đề chuẩn cấu trúc 2025 - 2026
               </span>
             </Link>
           </div>
