@@ -25,7 +25,7 @@ const extra: LessonExtra = {
         {
           text: "Góc hợp bởi véc-tơ vận tốc của hai hạt Heli sau phản ứng là 180°.",
           answer: false,
-          explain: "Sai. Vì proton ban đầu có động năng K_p > 0 (động lượng p_p ≠ 0), theo quy tắc hình bình hành động lượng p⃗_p = p⃗_He1 + p⃗_He2 nên góc giữa hai hạt He là góc tù (khoảng 160°), không thể thẳng hàng 180°.",
+          explain: "Sai. Vì proton ban đầu có động năng K_p > 0 (động lượng p_p ≠ 0), theo quy tắc hình bình hành động lượng p⃗_p = p⃗_He1 + p⃗_He2 nên góc giữa hai hạt He là góc tù (khoảng 168°, tính từ cosθ = p_p/(2p_He) với p_p, p_He suy ra từ K_p, K_He và khối lượng tương ứng), không thể thẳng hàng 180°.",
         },
       ],
     },

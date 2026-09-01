@@ -59,10 +59,10 @@ const questions: Question[] = [
   {
     id: "q8",
     q: "Một căn phòng có kích thước 4 m x 5 m x 3 m. Ban đầu không khí trong phòng ở nhiệt độ 17°C và áp suất 1 atm. Khi nhiệt độ trong phòng tăng lên 27°C ở áp suất không đổi, khối lượng không khí đã thoát ra khỏi phòng là: (cho khối lượng mol không khí M = 29 g/mol, R = 8,314 J/(mol.K))",
-    options: ["2,41 kg", "4,82 kg", "1,20 kg", "7,23 kg"],
+    options: ["2,44 kg", "4,82 kg", "1,20 kg", "7,23 kg"],
     answer: 0,
     explain:
-      "Thể tích phòng V = 60 m³. Ban đầu n₁ = (p . V) / (R . T₁) = (1,013.10⁵ . 60) / (8,314 . 290) ≈ 2521,2 mol. Khi lên 27°C (300 K): n₂ = (1,013.10⁵ . 60) / (8,314 . 300) ≈ 2437,2 mol. Lượng mol thoát ra Δn = n₁ - n₂ = 84 mol. Khối lượng thoát ra: Δm = 84 . 0,029 ≈ 2,436 kg ≈ 2,41 kg.",
+      "Thể tích phòng V = 60 m³. Ban đầu n₁ = (p . V) / (R . T₁) = (1,013.10⁵ . 60) / (8,314 . 290) ≈ 2521,2 mol. Khi lên 27°C (300 K): n₂ = (1,013.10⁵ . 60) / (8,314 . 300) ≈ 2437,2 mol. Lượng mol thoát ra Δn = n₁ - n₂ = 84 mol. Khối lượng thoát ra: Δm = 84 . 0,029 ≈ 2,436 kg ≈ 2,44 kg.",
   },
   {
     id: "q9",

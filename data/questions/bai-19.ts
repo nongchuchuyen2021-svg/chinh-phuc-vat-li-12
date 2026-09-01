@@ -104,14 +104,14 @@ const questions: Question[] = [
     id: "q10",
     q: "Trong quá trình lan truyền của sóng điện từ, năng lượng của sóng điện từ được truyền đi dưới dạng:",
     options: [
-      "Năng lượng điện trường và năng lượng từ trường chuyển hoá tuần hoàn lẫn nhau.",
+      "Năng lượng điện trường và năng lượng từ trường dao động cùng pha, cùng lan truyền theo phương truyền sóng.",
       "Chỉ là động năng của các ion khí.",
       "Thế năng đàn hồi của môi trường chân không.",
       "Nhiệt lượng làm nóng trực tiếp không gian.",
     ],
     answer: 0,
     explain:
-      "Sóng điện từ mang năng lượng gồm tổng mật độ năng lượng điện trường w_e = 1/2 ε E² và mật độ năng lượng từ trường w_b = 1/(2μ) B² lan truyền trong không gian.",
+      "Sóng điện từ mang năng lượng gồm tổng mật độ năng lượng điện trường w_e = 1/2 ε E² và mật độ năng lượng từ trường w_b = 1/(2μ) B². Vì E⃗ và B⃗ trong sóng điện từ luôn dao động CÙNG PHA (khác với mạch dao động LC, nơi năng lượng điện và từ chuyển hoá lệch pha 90° cho nhau), hai mật độ năng lượng này cùng đạt cực đại, cùng triệt tiêu đồng thời và cùng lan truyền theo phương truyền sóng — không phải \"chuyển hoá qua lại\" như trong mạch LC.",
   },
 ];
 

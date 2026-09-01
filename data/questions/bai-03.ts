@@ -105,13 +105,10 @@ const questions: Question[] = [
     id: "q10",
     q: "Cho 3 vật A, B, C có nhiệt độ lần lượt là T_A = 300 K, t_B = 25°C, t_C = 80°F. Sắp xếp các vật theo thứ tự nhiệt độ tăng dần là:",
     options: ["C < B < A", "B < C < A", "A < B < C", "C < A < B"],
-    answer: 0,
+    answer: 1,
     explain:
-      "Quy đổi về cùng thang Celsius:\n- Vật A: t_A = 300 - 273 = 27°C.\n- Vật B: t_B = 25°C.\n- Vật C: t_C = (80 - 32) / 1,8 ≈ 26,67°C.\nSo sánh: 25°C (B) < 26,67°C (C) < 27°C (A) => B < C < A. (Nếu đề hỏi C < B < A hay B < C < A: B=25°C < C≈26,67°C < A=27°C). Ta chọn B < C < A.",
+      "Quy đổi về cùng thang Celsius:\n- Vật A: t_A = 300 - 273 = 27°C.\n- Vật B: t_B = 25°C.\n- Vật C: t_C = (80 - 32) / 1,8 ≈ 26,67°C.\nSo sánh: 25°C (B) < 26,67°C (C) < 27°C (A), tức B < C < A.",
   },
 ];
-
-// Cập nhật đáp án câu 10 cho chuẩn
-questions[9].answer = 1;
 
 export default questions;

@@ -26,11 +26,11 @@ const questions: Question[] = [
   },
   {
     id: "q4",
-    q: "Cho phản ứng hạt nhân: ^3_1T + ^2_1D -> ^4_2He + ^1_0n. Biết độ hụt khối của T, D và He lần lượt là Δm_T = 0,0087 u; Δm_D = 0,0024 u; Δm_He = 0,0305 u. Lấy 1 u = 931,5 MeV/c². Năng lượng toả ra của phản ứng là:",
+    q: "Cho phản ứng hạt nhân: ^3_1T + ^2_1D -> ^4_2He + ^1_0n. Biết độ hụt khối của T, D và He lần lượt là Δm_T = 0,0092 u; Δm_D = 0,0024 u; Δm_He = 0,0305 u. Lấy 1 u = 931,5 MeV/c². Năng lượng toả ra của phản ứng là:",
     options: ["18,07 MeV", "17,60 MeV", "28,41 MeV", "9,31 MeV"],
-    answer: 0,
+    answer: 1,
     explain:
-      "Q = (Δm_He - Δm_T - Δm_D) . c² = (0,0305 - 0,0087 - 0,0024) . 931,5 = 0,0194 . 931,5 ≈ 18,07 MeV.",
+      "Q = (Δm_He - Δm_T - Δm_D) . c² = (0,0305 - 0,0092 - 0,0024) . 931,5 = 0,0189 . 931,5 ≈ 17,60 MeV — khớp với giá trị toả năng lượng chuẩn của phản ứng nhiệt hạch D-T đã nêu ở Bài 22, Bài 24 (²H + ³H → ⁴He + n + 17,6 MeV).",
   },
   {
     id: "q5",

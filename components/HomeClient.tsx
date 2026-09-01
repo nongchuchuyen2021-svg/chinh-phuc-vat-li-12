@@ -236,7 +236,7 @@ export default function HomeClient({ counts }: { counts: Record<string, LessonCo
                 Sổ tay Công thức
               </span>
               <span className="mt-0.5 font-mono text-[11px] text-star-mute sm:text-xs">
-                Tra cứu nhanh 4 chương
+                Trọn bộ 3 khối 10 - 11 - 12
               </span>
             </Link>
 
