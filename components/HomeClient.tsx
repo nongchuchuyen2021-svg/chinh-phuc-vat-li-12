@@ -329,7 +329,7 @@ export default function HomeClient({ counts }: { counts: Record<string, LessonCo
         <div className="glow-line mx-auto mt-12 max-w-xs" />
 
         <footer className="mt-6 space-y-1 text-center font-mono text-xs text-star-mute">
-          <p>Tổ Toán - Tin, trường THPT Na Rì, xã Na Rì, tỉnh Thái Nguyên</p>
+          <p>Tổ Tự nhiên 1, trường THPT Na Rì, xã Na Rì, tỉnh Thái Nguyên</p>
           <p>SGK Kết nối tri thức với cuộc sống · Tiến độ lưu trên trình duyệt của bạn</p>
         </footer>
       </div>
